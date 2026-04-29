@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #f8fafc;
+}
+
+/* Cohort table scrollable container */
+.cohort-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Heatmap cell coloring via CSS variable */
+.heatmap-cell {
+  background-color: rgba(37, 99, 235, var(--heat, 0));
+  transition: background-color 0.15s;
+}
+
+.heatmap-cell:hover {
+  filter: brightness(0.92);
+}

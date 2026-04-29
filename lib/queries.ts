@@ -1,0 +1,101 @@
+export const ALL_PATIENTS_SQL = `
+WITH first_ship AS (
+  SELECT
+    PATIENT_ID,
+    DATE_TRUNC('MONTH', MIN(SUPPLIER_SHIPPED_DATE)) AS first_ship_month
+  FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER
+  WHERE SUPPLIER_NAME = 'NewU DME'
+    AND SUPPLIER_SHIPPED_DATE IS NOT NULL
+  GROUP BY PATIENT_ID
+)
+SELECT
+  TO_CHAR(DATE_TRUNC('MONTH', o.SUPPLIER_SHIPPED_DATE), 'YYYY-MM') AS order_month,
+  TO_CHAR(fs.first_ship_month, 'YYYY-MM')                          AS cohort_month,
+  COUNT(DISTINCT o.PATIENT_ID)                                     AS patients,
+  SUM(o.ASSUMED_REVENUE)                                           AS assumed_revenue
+FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER o
+JOIN first_ship fs ON o.PATIENT_ID = fs.PATIENT_ID
+WHERE o.SUPPLIER_NAME = 'NewU DME'
+  AND o.SUPPLIER_SHIPPED_DATE IS NOT NULL
+  AND fs.first_ship_month >= '2025-01-01'
+  AND o.SUPPLIER_SHIPPED_DATE >= '2025-01-01'
+GROUP BY 1, 2
+ORDER BY cohort_month, order_month
+`
+
+export const BY_CHANNEL_SQL = `
+WITH first_ship AS (
+  SELECT
+    PATIENT_ID,
+    DATE_TRUNC('MONTH', MIN(SUPPLIER_SHIPPED_DATE)) AS first_ship_month
+  FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER
+  WHERE SUPPLIER_NAME = 'NewU DME'
+    AND SUPPLIER_SHIPPED_DATE IS NOT NULL
+  GROUP BY PATIENT_ID
+)
+SELECT
+  TO_CHAR(DATE_TRUNC('MONTH', o.SUPPLIER_SHIPPED_DATE), 'YYYY-MM') AS order_month,
+  TO_CHAR(fs.first_ship_month, 'YYYY-MM')                          AS cohort_month,
+  CASE
+    WHEN o.USER_ORGANIZATION_NAME IN ('D2c Conduit', 'CH Direct') THEN 'Direct to Consumer'
+    ELSE 'Partnerships'
+  END AS channel,
+  COUNT(DISTINCT o.PATIENT_ID) AS patients,
+  SUM(o.ASSUMED_REVENUE)       AS assumed_revenue
+FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER o
+JOIN first_ship fs ON o.PATIENT_ID = fs.PATIENT_ID
+WHERE o.SUPPLIER_NAME = 'NewU DME'
+  AND o.SUPPLIER_SHIPPED_DATE IS NOT NULL
+  AND fs.first_ship_month >= '2025-01-01'
+  AND o.SUPPLIER_SHIPPED_DATE >= '2025-01-01'
+GROUP BY 1, 2, 3
+ORDER BY cohort_month, order_month, channel
+`
+
+export const BY_PARTNER_SQL = `
+WITH first_ship AS (
+  SELECT
+    PATIENT_ID,
+    DATE_TRUNC('MONTH', MIN(SUPPLIER_SHIPPED_DATE)) AS first_ship_month
+  FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER
+  WHERE SUPPLIER_NAME = 'NewU DME'
+    AND SUPPLIER_SHIPPED_DATE IS NOT NULL
+  GROUP BY PATIENT_ID
+),
+qualifying_partners AS (
+  SELECT USER_ORGANIZATION_NAME
+  FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER o
+  JOIN first_ship fs ON o.PATIENT_ID = fs.PATIENT_ID
+  WHERE o.SUPPLIER_NAME = 'NewU DME'
+    AND o.SUPPLIER_SHIPPED_DATE IS NOT NULL
+    AND fs.first_ship_month >= '2025-01-01'
+    AND o.USER_ORGANIZATION_NAME NOT IN ('D2c Conduit', 'CH Direct')
+  GROUP BY USER_ORGANIZATION_NAME
+  HAVING COUNT(DISTINCT o.PATIENT_ID) >= 10
+)
+SELECT
+  TO_CHAR(DATE_TRUNC('MONTH', o.SUPPLIER_SHIPPED_DATE), 'YYYY-MM') AS order_month,
+  TO_CHAR(fs.first_ship_month, 'YYYY-MM')                          AS cohort_month,
+  o.USER_ORGANIZATION_NAME                                          AS partner,
+  COUNT(DISTINCT o.PATIENT_ID)                                     AS patients,
+  SUM(o.ASSUMED_REVENUE)                                           AS assumed_revenue
+FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_ORDER o
+JOIN first_ship fs ON o.PATIENT_ID = fs.PATIENT_ID
+JOIN qualifying_partners qp ON o.USER_ORGANIZATION_NAME = qp.USER_ORGANIZATION_NAME
+WHERE o.SUPPLIER_NAME = 'NewU DME'
+  AND o.SUPPLIER_SHIPPED_DATE IS NOT NULL
+  AND fs.first_ship_month >= '2025-01-01'
+  AND o.SUPPLIER_SHIPPED_DATE >= '2025-01-01'
+GROUP BY 1, 2, 3
+ORDER BY cohort_month, order_month, partner
+`
+
+export const AD_SPEND_SQL = `
+SELECT
+  TO_CHAR(DATE_TRUNC('MONTH', TO_TIMESTAMP(REPORT_DATE / 1000)), 'YYYY-MM') AS month,
+  SUM(AD_AMOUNT_SPENT) AS total_spend
+FROM CONDUIT_ANALYTICS_DB.ANALYTICS_REPORTING.FACT_AD_SPEND
+WHERE TO_TIMESTAMP(REPORT_DATE / 1000) >= '2025-01-01'
+GROUP BY 1
+ORDER BY 1
+`
