@@ -4,7 +4,7 @@ import { ALL_PATIENTS_SQL, BY_CHANNEL_SQL, BY_PARTNER_SQL, AD_SPEND_SQL } from '
 import type { CohortRow, ChannelRow, PartnerRow, AdSpendRow } from '@/types'
 import CohortDashboard from '@/components/CohortDashboard'
 
-export const revalidate = 3600 // Refresh data every hour
+export const dynamic = 'force-dynamic' // Always fetch live data from Snowflake
 
 export default async function Home() {
   const [rawAll, rawChannel, rawPartner, adSpend] = await Promise.all([
