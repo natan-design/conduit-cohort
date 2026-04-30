@@ -1,5 +1,5 @@
 import type { CohortRow, CohortSummary, AdSpendRow } from '@/types'
-import { STATIC_AD_SPEND } from '@/lib/marketing-spend'
+import { STATIC_AD_SPEND, PARTNERSHIPS_SPEND, BLENDED_SPEND } from '@/lib/marketing-spend'
 
 const MONTH_LABELS: Record<string, string> = {
   '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr',
@@ -23,6 +23,8 @@ export function buildCohortSummaries(
   adSpend: AdSpendRow[]
 ): CohortSummary[] {
   const spendMap = new Map<string, number>(Object.entries(STATIC_AD_SPEND))
+  const partnershipsSpendMap = new Map<string, number>(Object.entries(PARTNERSHIPS_SPEND))
+  const blendedSpendMap = new Map<string, number>(Object.entries(BLENDED_SPEND))
 
   // Group by cohort_month
   const byC = new Map<string, CohortRow[]>()
@@ -53,6 +55,10 @@ export function buildCohortSummaries(
     const total_revenue = revenue_by_month.reduce((s, v) => s + v, 0)
     const ad_spend = spendMap.get(cohort_month) ?? null
     const cac = (ad_spend !== null && new_patients > 0) ? ad_spend / new_patients : null
+    const partnerships_spend = partnershipsSpendMap.get(cohort_month) ?? null
+    const partnerships_cac = (partnerships_spend !== null && new_patients > 0) ? partnerships_spend / new_patients : null
+    const blended_spend = blendedSpendMap.get(cohort_month) ?? null
+    const blended_cac = (blended_spend !== null && new_patients > 0) ? blended_spend / new_patients : null
 
     summaries.push({
       cohort_month,
@@ -60,6 +66,10 @@ export function buildCohortSummaries(
       new_patients,
       ad_spend,
       cac,
+      partnerships_spend,
+      partnerships_cac,
+      blended_spend,
+      blended_cac,
       months_active: maxIdx + 1,
       revenue_by_month,
       patients_by_month,

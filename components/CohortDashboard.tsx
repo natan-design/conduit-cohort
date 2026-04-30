@@ -120,7 +120,7 @@ export default function CohortDashboard({
       {/* Content */}
       <div className="max-w-screen-2xl mx-auto px-6 pb-12">
         {tab === 'cohort' ? (
-          <CohortTable cohorts={filteredCohorts} showSpend={filterMode === 'all' || filterMode === 'd2c'} />
+          <CohortTable cohorts={filteredCohorts} filterMode={filterMode} />
         ) : (
           <RetentionChart cohorts={filteredCohorts} />
         )}

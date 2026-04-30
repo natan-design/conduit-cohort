@@ -24,6 +24,10 @@ export interface CohortSummary {
   new_patients: number
   ad_spend: number | null
   cac: number | null
+  partnerships_spend: number | null
+  partnerships_cac: number | null
+  blended_spend: number | null
+  blended_cac: number | null
   months_active: number
   revenue_by_month: number[]   // index = relative month (0 = acquisition)
   patients_by_month: number[]
