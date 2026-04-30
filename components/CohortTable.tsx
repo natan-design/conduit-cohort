@@ -4,6 +4,7 @@ import type { CohortSummary } from '@/types'
 
 interface Props {
   cohorts: CohortSummary[]
+  showSpend?: boolean
 }
 
 const fmt$ = (n: number) =>
@@ -15,7 +16,7 @@ const fmtFull$ = (n: number) =>
 // Max columns to show (we'll show M0 through M_max)
 const MAX_MONTHS = 16
 
-export default function CohortTable({ cohorts }: Props) {
+export default function CohortTable({ cohorts, showSpend = true }: Props) {
   if (!cohorts.length) return (
     <div className="text-center py-20 text-slate-400">No cohort data available</div>
   )
@@ -37,12 +38,8 @@ export default function CohortTable({ cohorts }: Props) {
             <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
               New Pts
             </th>
-            <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
-              Ad Spend
-            </th>
-            <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
-              CAC
-            </th>
+            {showSpend && <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">Ad Spend</th>}
+            {showSpend && <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">CAC</th>}
             {Array.from({ length: numCols }, (_, i) => (
               <th key={i} className="px-3 py-3 text-right font-semibold text-slate-500 whitespace-nowrap text-xs">
                 M+{i}
@@ -79,15 +76,16 @@ export default function CohortTable({ cohorts }: Props) {
                   {c.new_patients.toLocaleString()}
                 </td>
 
-                {/* Ad spend */}
-                <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
-                  {c.ad_spend !== null ? fmt$(c.ad_spend) : <span className="text-slate-300">—</span>}
-                </td>
-
-                {/* CAC */}
-                <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
-                  {c.cac !== null ? fmt$(c.cac) : <span className="text-slate-300">—</span>}
-                </td>
+                {showSpend && (
+                  <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
+                    {c.ad_spend !== null ? fmt$(c.ad_spend) : <span className="text-slate-300">—</span>}
+                  </td>
+                )}
+                {showSpend && (
+                  <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
+                    {c.cac !== null ? fmt$(c.cac) : <span className="text-slate-300">—</span>}
+                  </td>
+                )}
 
                 {/* Revenue by relative month */}
                 {Array.from({ length: numCols }, (_, i) => {
@@ -149,13 +147,15 @@ export default function CohortTable({ cohorts }: Props) {
             <td className="px-3 py-3 text-right tabular-nums font-bold text-slate-900">
               {cohorts.reduce((s, c) => s + c.new_patients, 0).toLocaleString()}
             </td>
-            <td className="px-3 py-3 text-right tabular-nums font-semibold text-slate-600">
-              {(() => {
-                const s = cohorts.reduce((t, c) => t + (c.ad_spend ?? 0), 0)
-                return s > 0 ? fmt$(s) : <span className="text-slate-300">—</span>
-              })()}
-            </td>
-            <td colSpan={numCols + 2} />
+            {showSpend && (
+              <td className="px-3 py-3 text-right tabular-nums font-semibold text-slate-600">
+                {(() => {
+                  const s = cohorts.reduce((t, c) => t + (c.ad_spend ?? 0), 0)
+                  return s > 0 ? fmt$(s) : <span className="text-slate-300">—</span>
+                })()}
+              </td>
+            )}
+            <td colSpan={numCols + (showSpend ? 1 : 3)} />
             <td className="px-3 py-3 text-right tabular-nums font-bold text-slate-900">
               {fmt$(cohorts.reduce((s, c) => s + c.total_revenue, 0))}
             </td>
