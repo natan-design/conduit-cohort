@@ -1,4 +1,5 @@
 import type { CohortRow, CohortSummary, AdSpendRow } from '@/types'
+import { STATIC_AD_SPEND } from '@/lib/marketing-spend'
 
 const MONTH_LABELS: Record<string, string> = {
   '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr',
@@ -21,7 +22,7 @@ export function buildCohortSummaries(
   rows: CohortRow[],
   adSpend: AdSpendRow[]
 ): CohortSummary[] {
-  const spendMap = new Map(adSpend.map(r => [r.month, r.total_spend]))
+  const spendMap = new Map<string, number>(Object.entries(STATIC_AD_SPEND))
 
   // Group by cohort_month
   const byC = new Map<string, CohortRow[]>()
