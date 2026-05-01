@@ -19,7 +19,8 @@ const fmtFull$ = (n: number) =>
 const MAX_MONTHS = 16
 
 export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
-  const isPartnerships = filterMode === 'partnerships' || filterMode === 'partner'
+  const isPartnerships = filterMode === 'partnerships'
+  const showSpend = filterMode !== 'partner'
   const spendLabel = isPartnerships ? 'Partnerships Spend' : filterMode === 'd2c' ? 'Ad Spend' : 'Blended Spend'
   const cacLabel = isPartnerships ? 'CAC' : filterMode === 'd2c' ? 'CAC' : 'Blended CAC'
   const getSpend = (c: CohortSummary) => isPartnerships ? c.partnerships_spend : filterMode === 'd2c' ? c.ad_spend : c.blended_spend
@@ -45,8 +46,8 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
             <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
               New Pts
             </th>
-            <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">{spendLabel}</th>
-            <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">{cacLabel}</th>
+            {showSpend && <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">{spendLabel}</th>}
+            {showSpend && <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">{cacLabel}</th>}
             {Array.from({ length: numCols }, (_, i) => (
               <th key={i} className="px-3 py-3 text-right font-semibold text-slate-500 whitespace-nowrap text-xs">
                 M+{i}
@@ -56,7 +57,7 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
               Active Mo.
             </th>
             <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
-              LTV / Pt
+              Rev / Pt
             </th>
             <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
               Total Rev
@@ -83,12 +84,16 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
                   {c.new_patients.toLocaleString()}
                 </td>
 
-                <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
-                  {getSpend(c) !== null ? fmt$(getSpend(c)!) : <span className="text-slate-300">—</span>}
-                </td>
-                <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
-                  {getCac(c) !== null ? fmt$(getCac(c)!) : <span className="text-slate-300">—</span>}
-                </td>
+                {showSpend && (
+                  <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
+                    {getSpend(c) !== null ? fmt$(getSpend(c)!) : <span className="text-slate-300">—</span>}
+                  </td>
+                )}
+                {showSpend && (
+                  <td className="px-3 py-2.5 text-right tabular-nums text-slate-500">
+                    {getCac(c) !== null ? fmt$(getCac(c)!) : <span className="text-slate-300">—</span>}
+                  </td>
+                )}
 
                 {/* Revenue by relative month */}
                 {Array.from({ length: numCols }, (_, i) => {
@@ -150,13 +155,15 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
             <td className="px-3 py-3 text-right tabular-nums font-bold text-slate-900">
               {cohorts.reduce((s, c) => s + c.new_patients, 0).toLocaleString()}
             </td>
-            <td className="px-3 py-3 text-right tabular-nums font-semibold text-slate-600">
-              {(() => {
-                const s = cohorts.reduce((t, c) => t + (getSpend(c) ?? 0), 0)
-                return s > 0 ? fmt$(s) : <span className="text-slate-300">—</span>
-              })()}
-            </td>
-            <td colSpan={numCols + 2} />
+            {showSpend && (
+              <td className="px-3 py-3 text-right tabular-nums font-semibold text-slate-600">
+                {(() => {
+                  const s = cohorts.reduce((t, c) => t + (getSpend(c) ?? 0), 0)
+                  return s > 0 ? fmt$(s) : <span className="text-slate-300">—</span>
+                })()}
+              </td>
+            )}
+            <td colSpan={numCols + (showSpend ? 2 : 4)} />
             <td className="px-3 py-3 text-right tabular-nums font-bold text-slate-900">
               {fmt$(cohorts.reduce((s, c) => s + c.total_revenue, 0))}
             </td>

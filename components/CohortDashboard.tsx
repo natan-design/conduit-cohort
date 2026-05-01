@@ -20,7 +20,7 @@ export default function CohortDashboard({
 
   // Derive cohort summaries for the current filter
   const filteredCohorts = useMemo(() => {
-    if (filterMode === 'all') return cohorts
+    if (filterMode === 'all') return cohorts.filter(c => c.months_active >= 2)
 
     let filteredRows: CohortRow[]
 
@@ -36,7 +36,7 @@ export default function CohortDashboard({
         .filter((r): r is PartnerRow => (r as PartnerRow).partner === selectedPartner)
     }
 
-    return buildCohortSummaries(filteredRows, [])
+    return buildCohortSummaries(filteredRows, []).filter(c => c.months_active >= 2)
   }, [filterMode, selectedPartner, cohorts, rawChannel, rawPartner])
 
   const totalRevenue = filteredCohorts.reduce((s, c) => s + c.total_revenue, 0)
