@@ -17,27 +17,30 @@ export default function CohortDashboard({
   const [tab, setTab] = useState<Tab>('cohort')
   const [filterMode, setFilterMode] = useState<FilterMode>('all')
   const [selectedPartner, setSelectedPartner] = useState<string>('')
+  const [excludeCurrentMonth, setExcludeCurrentMonth] = useState(true)
+
+  const currentMonth = useMemo(() => new Date().toISOString().slice(0, 7), [])
 
   // Derive cohort summaries for the current filter
   const filteredCohorts = useMemo(() => {
-    if (filterMode === 'all') return cohorts.filter(c => c.months_active >= 2)
+    let rows: CohortRow[]
 
-    let filteredRows: CohortRow[]
-
-    if (filterMode === 'd2c') {
-      filteredRows = rawChannel
-        .filter((r): r is ChannelRow => (r as ChannelRow).channel === 'Direct to Consumer')
+    if (filterMode === 'all') {
+      rows = rawAll
+    } else if (filterMode === 'd2c') {
+      rows = rawChannel.filter((r): r is ChannelRow => (r as ChannelRow).channel === 'Direct to Consumer')
     } else if (filterMode === 'partnerships') {
-      filteredRows = rawChannel
-        .filter((r): r is ChannelRow => (r as ChannelRow).channel === 'Partnerships')
+      rows = rawChannel.filter((r): r is ChannelRow => (r as ChannelRow).channel === 'Partnerships')
     } else {
-      // specific partner
-      filteredRows = rawPartner
-        .filter((r): r is PartnerRow => (r as PartnerRow).partner === selectedPartner)
+      rows = rawPartner.filter((r): r is PartnerRow => (r as PartnerRow).partner === selectedPartner)
     }
 
-    return buildCohortSummaries(filteredRows, []).filter(c => c.months_active >= 2)
-  }, [filterMode, selectedPartner, cohorts, rawChannel, rawPartner])
+    if (excludeCurrentMonth) {
+      rows = rows.filter(r => r.order_month !== currentMonth)
+    }
+
+    return buildCohortSummaries(rows, []).filter(c => c.months_active >= 2)
+  }, [filterMode, selectedPartner, excludeCurrentMonth, currentMonth, rawAll, rawChannel, rawPartner])
 
   const totalRevenue = filteredCohorts.reduce((s, c) => s + c.total_revenue, 0)
   const totalPatients = filteredCohorts.reduce((s, c) => s + c.new_patients, 0)
@@ -98,6 +101,20 @@ export default function CohortDashboard({
             Partnerships
           </FilterBtn>
         </div>
+
+        <div className="h-6 w-px bg-slate-200" />
+
+        {/* Current month toggle */}
+        <button
+          onClick={() => setExcludeCurrentMonth(!excludeCurrentMonth)}
+          className={`px-3 py-1.5 text-sm rounded-lg font-medium border transition-all ${
+            excludeCurrentMonth
+              ? 'bg-amber-50 border-amber-300 text-amber-700'
+              : 'bg-white border-slate-200 text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          {excludeCurrentMonth ? '⊘ Excl. current mo.' : '+ Incl. current mo.'}
+        </button>
 
         {/* Partner dropdown — only show when in partnerships mode */}
         {(filterMode === 'partnerships' || filterMode === 'partner') && (

@@ -60,6 +60,9 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
               Rev / Pt
             </th>
             <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
+              Est. CM / Pt
+            </th>
+            <th className="px-3 py-3 text-right font-semibold text-slate-700 whitespace-nowrap">
               Total Rev
             </th>
           </tr>
@@ -137,6 +140,11 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
                   {fmt$(c.revenue_per_patient)}
                 </td>
 
+                {/* Est. Contribution Margin per patient (34% of revenue) */}
+                <td className="px-3 py-2.5 text-right tabular-nums font-medium text-emerald-700">
+                  {fmt$(c.revenue_per_patient * 0.34)}
+                </td>
+
                 {/* Total revenue */}
                 <td className="px-3 py-2.5 text-right tabular-nums font-semibold text-slate-900">
                   {fmt$(c.total_revenue)}
@@ -164,6 +172,14 @@ export default function CohortTable({ cohorts, filterMode = 'all' }: Props) {
               </td>
             )}
             <td colSpan={numCols + (showSpend ? 2 : 4)} />
+            <td className="px-3 py-3 text-right tabular-nums font-semibold text-emerald-700">
+              {(() => {
+                const totalRev = cohorts.reduce((s, c) => s + c.total_revenue, 0)
+                const totalPts = cohorts.reduce((s, c) => s + c.new_patients, 0)
+                const avgCM = totalPts > 0 ? (totalRev / totalPts) * 0.34 : 0
+                return avgCM > 0 ? fmt$(avgCM) : <span className="text-slate-300">—</span>
+              })()}
+            </td>
             <td className="px-3 py-3 text-right tabular-nums font-bold text-slate-900">
               {fmt$(cohorts.reduce((s, c) => s + c.total_revenue, 0))}
             </td>
