@@ -1,18 +1,20 @@
 // Sourced from Google Sheet (updated manually)
 // https://docs.google.com/spreadsheets/d/1H77yhFdLU38uWVao5RUayP3xXmNd1QMHlPkn1ZC5tYk
 
-// Row 2: SG&A — Marketing (D2C paid ads, promo, conferences)
+// Row 2: D2C paid ads (Google + Meta) — sourced from head of marketing
+// Last updated: Apr 29 2026
 export const STATIC_AD_SPEND: Record<string, number> = {
-  '2025-06': 35912,
-  '2025-07': 40653,
-  '2025-08': 59123,
-  '2025-09': 64721,
-  '2025-10': 69880,
-  '2025-11': 64337,
-  '2025-12': 92460,
-  '2026-01': 108149,
-  '2026-02': 162129,
-  '2026-03': 229463,
+  '2025-06': 30210,
+  '2025-07': 34492,
+  '2025-08': 51488,
+  '2025-09': 56864,
+  '2025-10': 59057,
+  '2025-11': 45451,
+  '2025-12': 62852,
+  '2026-01': 94815,
+  '2026-02': 135305,
+  '2026-03': 191694,
+  '2026-04': 204540,
 }
 
 // Row 4: Partnerships spend
@@ -31,14 +33,14 @@ export const PARTNERSHIPS_SPEND: Record<string, number> = {
 
 // Row 7: Blended total spend (D2C + Partnerships)
 export const BLENDED_SPEND: Record<string, number> = {
-  '2025-06': 35912,
-  '2025-07': 40653,
-  '2025-08': 59123,
-  '2025-09': 64721,
-  '2025-10': 82115,
-  '2025-11': 91004,
-  '2025-12': 119908,
-  '2026-01': 187006,
-  '2026-02': 207546,
-  '2026-03': 274880,
+  '2025-06': 30210,
+  '2025-07': 34492,
+  '2025-08': 51488,
+  '2025-09': 56864,
+  '2025-10': 71292,
+  '2025-11': 72118,
+  '2025-12': 90300,
+  '2026-01': 173672,
+  '2026-02': 180722,
+  '2026-03': 237111,
 }
