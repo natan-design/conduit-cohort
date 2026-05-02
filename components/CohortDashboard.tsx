@@ -5,9 +5,13 @@ import type { DashboardData, CohortRow, ChannelRow, PartnerRow } from '@/types'
 import { buildCohortSummaries, formatMonthLabel } from '@/lib/transforms'
 import CohortTable from './CohortTable'
 import RetentionChart from './RetentionChart'
+import CACPaybackChart from './CACPaybackChart'
+import RevenueMomentumChart from './RevenueMomentumChart'
+import NewPatientGrowthChart from './NewPatientGrowthChart'
+import TopPartnersChart from './TopPartnersChart'
 
 type FilterMode = 'all' | 'd2c' | 'partnerships' | 'partner'
-type Tab = 'cohort' | 'retention'
+type Tab = 'cohort' | 'retention' | 'payback' | 'momentum' | 'growth' | 'partners'
 
 const D2C_ORGS = new Set(['D2c Conduit', 'CH Direct'])
 
@@ -84,6 +88,18 @@ export default function CohortDashboard({
           <TabBtn active={tab === 'retention'} onClick={() => setTab('retention')}>
             Retention Curves
           </TabBtn>
+          <TabBtn active={tab === 'payback'} onClick={() => setTab('payback')}>
+            CAC Payback
+          </TabBtn>
+          <TabBtn active={tab === 'momentum'} onClick={() => setTab('momentum')}>
+            Revenue Momentum
+          </TabBtn>
+          <TabBtn active={tab === 'growth'} onClick={() => setTab('growth')}>
+            Patient Growth
+          </TabBtn>
+          <TabBtn active={tab === 'partners'} onClick={() => setTab('partners')}>
+            Top Partners
+          </TabBtn>
         </div>
 
         <div className="h-6 w-px bg-slate-200" />
@@ -145,14 +161,27 @@ export default function CohortDashboard({
 
       {/* Content */}
       <div className="max-w-screen-2xl mx-auto px-6 pb-12">
-        {tab === 'cohort' ? (
+        {tab === 'cohort' && (
           <CohortTable cohorts={filteredCohorts} filterMode={filterMode} />
-        ) : (
+        )}
+        {tab === 'retention' && (
           <RetentionChart
             cohorts={filteredCohorts}
             rawChannel={rawChannel}
             excludeCurrentMonth={excludeCurrentMonth}
           />
+        )}
+        {tab === 'payback' && (
+          <CACPaybackChart rawChannel={rawChannel} excludeCurrentMonth={excludeCurrentMonth} />
+        )}
+        {tab === 'momentum' && (
+          <RevenueMomentumChart cohorts={filteredCohorts} />
+        )}
+        {tab === 'growth' && (
+          <NewPatientGrowthChart rawChannel={rawChannel} excludeCurrentMonth={excludeCurrentMonth} />
+        )}
+        {tab === 'partners' && (
+          <TopPartnersChart rawPartner={rawPartner} excludeCurrentMonth={excludeCurrentMonth} />
         )}
       </div>
     </div>
