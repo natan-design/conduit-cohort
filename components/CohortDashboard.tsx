@@ -104,17 +104,26 @@ export default function CohortDashboard({
 
         <div className="h-6 w-px bg-slate-200" />
 
-        {/* Current month toggle */}
-        <button
-          onClick={() => setExcludeCurrentMonth(!excludeCurrentMonth)}
-          className={`px-3 py-1.5 text-sm rounded-lg font-medium border transition-all ${
-            excludeCurrentMonth
-              ? 'bg-amber-50 border-amber-300 text-amber-700'
-              : 'bg-white border-slate-200 text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          {excludeCurrentMonth ? '⊘ Excl. current mo.' : '+ Incl. current mo.'}
-        </button>
+        {/* Exclude current month toggle */}
+        <label className="flex items-center gap-2 cursor-pointer select-none">
+          <span className="text-sm text-slate-600 font-medium whitespace-nowrap">
+            Exclude current mo.
+          </span>
+          <button
+            role="switch"
+            aria-checked={excludeCurrentMonth}
+            onClick={() => setExcludeCurrentMonth(!excludeCurrentMonth)}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 ${
+              excludeCurrentMonth ? 'bg-blue-600' : 'bg-slate-300'
+            }`}
+          >
+            <span
+              className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
+                excludeCurrentMonth ? 'translate-x-[18px]' : 'translate-x-[3px]'
+              }`}
+            />
+          </button>
+        </label>
 
         {/* Partner dropdown — only show when in partnerships mode */}
         {(filterMode === 'partnerships' || filterMode === 'partner') && (
