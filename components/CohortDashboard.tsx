@@ -73,7 +73,7 @@ export default function CohortDashboard({
           <div className="flex gap-8">
             <Stat label="Total Patients" value={totalPatients.toLocaleString()} />
             <Stat label="Total Revenue" value={`$${(totalRevenue / 1_000_000).toFixed(2)}M`} />
-            <Stat label="Avg LTV" value={`$${Math.round(avgLTV).toLocaleString()}`} />
+            <Stat label="Avg Rev / PP" value={`$${Math.round(avgLTV).toLocaleString()}`} />
           </div>
         </div>
       </header>
