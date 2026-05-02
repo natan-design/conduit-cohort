@@ -148,7 +148,11 @@ export default function CohortDashboard({
         {tab === 'cohort' ? (
           <CohortTable cohorts={filteredCohorts} filterMode={filterMode} />
         ) : (
-          <RetentionChart cohorts={filteredCohorts} />
+          <RetentionChart
+            cohorts={filteredCohorts}
+            rawChannel={rawChannel}
+            excludeCurrentMonth={excludeCurrentMonth}
+          />
         )}
       </div>
     </div>
