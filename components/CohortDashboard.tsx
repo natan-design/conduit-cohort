@@ -58,7 +58,7 @@ export default function CohortDashboard({
           <div>
             <h1 className="text-xl font-semibold text-slate-900">
               Conduit Health <span className="text-slate-400 font-normal">·</span>{' '}
-              NewU DME Cohort Analysis
+              DME Revenue Cohort Analysis
             </h1>
             <p className="text-xs text-slate-400 mt-0.5">
               Live from Snowflake · Last refreshed {refreshedAt}
