@@ -26,7 +26,7 @@ function cohortColor(idx: number, total: number): string {
 }
 
 const CHANNEL_STYLES: Record<string, { color: string; label: string }> = {
-  'Direct to Consumer': { color: '#3b82f6', label: 'D2C' },
+  'Direct to Consumer': { color: '#3b82f6', label: 'Dir. Response' },
   'Partnerships':       { color: '#10b981', label: 'Partnerships' },
 }
 

@@ -110,7 +110,7 @@ export default function CohortDashboard({
             All Patients
           </FilterBtn>
           <FilterBtn active={filterMode === 'd2c'} onClick={() => setFilterMode('d2c')}>
-            D2C
+            Direct Response
           </FilterBtn>
           <FilterBtn active={filterMode === 'partnerships' || filterMode === 'partner'}
             onClick={() => setFilterMode('partnerships')}>

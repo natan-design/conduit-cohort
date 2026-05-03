@@ -45,15 +45,15 @@ export default function NewPatientGrowthChart({ rawChannel, excludeCurrentMonth 
       []
     )
 
-    const map = new Map<string, { D2C: number; Partnerships: number }>()
+    const map = new Map<string, { 'Dir. Response': number; Partnerships: number }>()
 
     for (const s of d2cSummaries) {
-      const entry = map.get(s.cohort_month) ?? { D2C: 0, Partnerships: 0 }
-      entry.D2C = s.new_patients
+      const entry = map.get(s.cohort_month) ?? { 'Dir. Response': 0, Partnerships: 0 }
+      entry['Dir. Response'] = s.new_patients
       map.set(s.cohort_month, entry)
     }
     for (const s of partSummaries) {
-      const entry = map.get(s.cohort_month) ?? { D2C: 0, Partnerships: 0 }
+      const entry = map.get(s.cohort_month) ?? { 'Dir. Response': 0, Partnerships: 0 }
       entry.Partnerships = s.new_patients
       map.set(s.cohort_month, entry)
     }
@@ -63,7 +63,7 @@ export default function NewPatientGrowthChart({ rawChannel, excludeCurrentMonth 
       .map(([month, vals]) => ({
         month: formatLabel(month),
         Partnerships: vals.Partnerships,
-        D2C: vals.D2C,
+        'Dir. Response': vals['Dir. Response'],
       }))
   }, [rawChannel, excludeCurrentMonth, currentMonth])
 
@@ -96,14 +96,14 @@ export default function NewPatientGrowthChart({ rawChannel, excludeCurrentMonth 
             contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}
           />
           <Bar dataKey="Partnerships" stackId="pts" fill="#10b981" radius={[0, 0, 0, 0]} />
-          <Bar dataKey="D2C" stackId="pts" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="Dir. Response" stackId="pts" fill="#3b82f6" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
 
       <div className="flex gap-6 mt-4 px-2">
         <div className="flex items-center gap-2 text-sm">
           <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#3b82f6' }} />
-          <span className="text-slate-600">D2C</span>
+          <span className="text-slate-600">Dir. Response</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#10b981' }} />

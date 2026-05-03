@@ -69,7 +69,7 @@ export default function CACPaybackChart({ rawChannel, excludeCurrentMonth }: Pro
       : 0
     const maxMonths = Math.max(maxD2C, maxPart)
 
-    const chartData: { month: string; D2C?: number; Partnerships?: number }[] = []
+    const chartData: { month: string; 'Dir. Response'?: number; Partnerships?: number }[] = []
 
     for (let m = 0; m < maxMonths; m++) {
       const d2cEligible = d2cSummaries.filter(c => c.revenue_by_month.length >= m + 1)
@@ -87,10 +87,10 @@ export default function CACPaybackChart({ rawChannel, excludeCurrentMonth }: Pro
       )
       const partPat = partEligible.reduce((s, c) => s + c.new_patients, 0)
 
-      const point: { month: string; D2C?: number; Partnerships?: number } = {
+      const point: { month: string; 'Dir. Response'?: number; Partnerships?: number } = {
         month: `M+${m}`,
       }
-      if (d2cEligible.length > 0 && d2cPat > 0) point.D2C = d2cRevTotal / d2cPat
+      if (d2cEligible.length > 0 && d2cPat > 0) point['Dir. Response'] = d2cRevTotal / d2cPat
       if (partEligible.length > 0 && partPat > 0) point.Partnerships = partRevTotal / partPat
 
       chartData.push(point)
@@ -146,7 +146,7 @@ export default function CACPaybackChart({ rawChannel, excludeCurrentMonth }: Pro
           )}
           <Line
             type="monotone"
-            dataKey="D2C"
+            dataKey="Dir. Response"
             stroke={D2C_COLOR}
             strokeWidth={2}
             dot={false}
@@ -168,7 +168,7 @@ export default function CACPaybackChart({ rawChannel, excludeCurrentMonth }: Pro
         {d2cCAC > 0 && (
           <div className="flex items-center gap-2 text-sm">
             <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: D2C_COLOR }} />
-            <span className="text-slate-700">D2C</span>
+            <span className="text-slate-700">Dir. Response</span>
             <span className="text-slate-400">avg CAC {fmt(d2cCAC)}</span>
           </div>
         )}
