@@ -30,6 +30,7 @@ export const PARTNERSHIPS_SPEND: Record<string, number> = {
   '2026-01': 32216.10,
   '2026-02': 32237.80,
   '2026-03': 32257.40,
+  '2026-04': 45416.66,
 }
 
 // Row 7: Blended total spend (D2C + Partnerships)
@@ -44,4 +45,5 @@ export const BLENDED_SPEND: Record<string, number> = {
   '2026-01': 127031,
   '2026-02': 167543,
   '2026-03': 223951,
+  '2026-04': 249957,
 }
